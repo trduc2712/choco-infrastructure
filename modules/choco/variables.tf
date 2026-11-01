@@ -66,6 +66,11 @@ variable "clerk_webhook_signing_secret" {
   sensitive = true
 }
 
+variable "clerk_secret_key" {
+  type      = string
+  sensitive = true
+}
+
 variable "clerk_authorized_parties" {
   description = "Origins of the frontends allowed to call the API (checked against the azp claim)."
   type        = list(string)

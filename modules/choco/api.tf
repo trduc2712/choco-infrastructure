@@ -31,6 +31,7 @@ resource "render_env_group" "api" {
       ApiDocumentation__Enabled           = { value = tostring(var.api_documentation_enabled) }
       Clerk__Authority                    = { value = var.clerk_authority }
       Clerk__PublishableKey               = { value = var.clerk_publishable_key }
+      Clerk__SecretKey                    = { value = var.clerk_secret_key }
       Clerk__WebhookSigningSecret         = { value = var.clerk_webhook_signing_secret }
       Database__ConnectionString          = { value = local.database_connection_string }
       Storage__ServiceUrl                 = { value = local.storage_service_url }

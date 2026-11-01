@@ -20,6 +20,11 @@ variable "clerk_webhook_signing_secret" {
   sensitive = true
 }
 
+variable "clerk_secret_key" {
+  type      = string
+  sensitive = true
+}
+
 variable "neon_api_key" {
   type      = string
   sensitive = true
