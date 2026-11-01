@@ -11,6 +11,13 @@ resource "render_web_service" "api" {
       auto_deploy_trigger = var.api_auto_deploy_trigger
     }
   }
+
+  # render-oss/render 1.9.1 fails every update of a free-tier service
+  # (render-oss/terraform-provider-render#80), so the health check path is only set on
+  # create. Change it in the Render dashboard until the provider is fixed.
+  lifecycle {
+    ignore_changes = [health_check_path]
+  }
 }
 
 resource "render_env_group" "api" {
