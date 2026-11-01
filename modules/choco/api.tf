@@ -11,6 +11,13 @@ resource "render_web_service" "api" {
       auto_deploy_trigger = var.api_auto_deploy_trigger
     }
   }
+
+  # render-oss/render 1.9.1 fails every update of a free-tier service
+  # (render-oss/terraform-provider-render#80), so the health check path is only set on
+  # create. Change it in the Render dashboard until the provider is fixed.
+  lifecycle {
+    ignore_changes = [health_check_path]
+  }
 }
 
 resource "render_env_group" "api" {
@@ -24,6 +31,7 @@ resource "render_env_group" "api" {
       ApiDocumentation__Enabled           = { value = tostring(var.api_documentation_enabled) }
       Clerk__Authority                    = { value = var.clerk_authority }
       Clerk__PublishableKey               = { value = var.clerk_publishable_key }
+      Clerk__SecretKey                    = { value = var.clerk_secret_key }
       Clerk__WebhookSigningSecret         = { value = var.clerk_webhook_signing_secret }
       Database__ConnectionString          = { value = local.database_connection_string }
       Storage__ServiceUrl                 = { value = local.storage_service_url }
