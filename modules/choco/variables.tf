@@ -45,7 +45,7 @@ variable "api_auto_deploy_trigger" {
 
 variable "api_health_check_path" {
   type    = string
-  default = null
+  default = "/health"
 }
 
 variable "api_documentation_enabled" {
