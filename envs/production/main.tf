@@ -4,7 +4,7 @@ module "choco" {
   environment = "production"
   namespace   = "trduc2712"
 
-  api_plan                  = "starter"
+  api_plan                  = "free"
   api_auto_deploy_trigger   = "off"
   api_documentation_enabled = false
 
