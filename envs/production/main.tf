@@ -8,6 +8,8 @@ module "choco" {
   api_auto_deploy_trigger   = "off"
   api_documentation_enabled = false
 
+  web_production_branch = "production"
+
   clerk_authority              = var.clerk_authority
   clerk_publishable_key        = var.clerk_publishable_key
   clerk_webhook_signing_secret = var.clerk_webhook_signing_secret

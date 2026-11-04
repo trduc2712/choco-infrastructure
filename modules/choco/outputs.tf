@@ -5,3 +5,7 @@ output "api_url" {
 output "uploads_bucket_name" {
   value = b2_bucket.uploads.bucket_name
 }
+
+output "web_url" {
+  value = local.web_origin
+}

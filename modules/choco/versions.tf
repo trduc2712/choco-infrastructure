@@ -14,5 +14,10 @@ terraform {
       source  = "kislerdm/neon"
       version = "~> 0.18"
     }
+
+    vercel = {
+      source  = "vercel/vercel"
+      version = "~> 5.25"
+    }
   }
 }

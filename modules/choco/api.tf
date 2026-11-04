@@ -33,6 +33,7 @@ resource "render_env_group" "api" {
       Clerk__PublishableKey               = { value = var.clerk_publishable_key }
       Clerk__SecretKey                    = { value = var.clerk_secret_key }
       Clerk__WebhookSigningSecret         = { value = var.clerk_webhook_signing_secret }
+      Cors__AllowedOrigins__0             = { value = local.web_origin }
       Database__ConnectionString          = { value = local.database_connection_string }
       Storage__ServiceUrl                 = { value = local.storage_service_url }
       Storage__Region                     = { value = local.storage_region }
