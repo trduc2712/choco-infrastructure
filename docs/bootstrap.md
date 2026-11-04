@@ -1,12 +1,13 @@
 # Bootstrap
 
-Terraform creates the Neon project, the Render service and env group, and the B2 bucket. Everything below is done by hand, once per environment (`<env>` is `staging` or `production`).
+Terraform creates the Neon project, the Render service and env group, the B2 bucket, and the Vercel project with its environment variables. Everything below is done by hand, once per environment (`<env>` is `staging` or `production`).
 
 ## Accounts and Keys
 
 - **Render**: API key, workspace ID (`tea-…`), and a GitHub connection with access to `trduc2712/choco-api`.
 - **Neon**: personal API key and organization ID (`org-…`).
 - **Backblaze B2**: the Master Application Key; ordinary keys cannot create the key Terraform makes for the API.
+- **Vercel**: an account token (Account Settings → Tokens) on the Hobby plan, and the Vercel GitHub App installed with access to `trduc2712/choco-web`.
 - **Clerk**: no Terraform provider. Staging uses the Development instance, production the Production instance.
 - **Terraform Cloud**: `terraform login`.
 
@@ -30,7 +31,8 @@ Run `terraform init` in `envs/<env>` to create the workspace, then set:
 | `clerk_publishable_key` | | `pk_test_…` (staging) or `pk_live_…` (production) |
 | `clerk_secret_key` | yes | `sk_test_…` or `sk_live_…` |
 | `clerk_webhook_signing_secret` | yes | `whsec_…` of the environment's webhook endpoint; a placeholder until the endpoint exists |
-| `clerk_authorized_parties` | | HCL list, tick **HCL**, e.g. `["https://choco-api-staging.onrender.com"]` |
+| `vercel_api_token` | yes | Vercel account token |
+| `clerk_authorized_parties` | | Optional HCL list, tick **HCL**, of origins other than the web frontend's, which Terraform adds itself; e.g. `[]` |
 
 ## First Apply
 
@@ -43,8 +45,12 @@ Run `terraform init` in `envs/<env>` to create the workspace, then set:
    Host=<host>;Database=choco;Username=choco;Password=<password>;SSL Mode=Require
    ```
 
+5. Check that the Vercel project's production domain is `choco-web-<env>.vercel.app`, the `web_url` output. If the name was taken and Vercel gave another domain, the API rejects the frontend's tokens and requests.
+6. Deploy the frontend: staging builds on every push to `main` of `trduc2712/choco-web`. Production builds only from its `production` branch, which `vercel.json` there must enable; create the branch and push to it to deploy.
+
 ## Day-to-Day
 
 - Changes go through a PR, then **Confirm & Apply** after merge. Discard stale runs waiting for confirmation; they block newer ones.
 - Changing a variable does not queue a run: use **New run**.
 - After an env change, run **Deploy latest commit**. Render does not redeploy on its own, and **Restart** keeps the old env.
+- After a change to the frontend's environment variables, redeploy it on Vercel. Vite builds them into the bundle, so a running deployment keeps the old values.

@@ -72,8 +72,24 @@ variable "clerk_secret_key" {
 }
 
 variable "clerk_authorized_parties" {
-  description = "Origins of the frontends allowed to call the API (checked against the azp claim)."
+  description = "Origins of frontends other than the web frontend allowed to call the API (checked against the azp claim)."
   type        = list(string)
+  default     = []
+}
+
+variable "web_repo" {
+  type    = string
+  default = "trduc2712/choco-web"
+}
+
+variable "web_production_branch" {
+  type    = string
+  default = "main"
+}
+
+variable "web_node_version" {
+  type    = string
+  default = "22.x"
 }
 
 variable "neon_org_id" {

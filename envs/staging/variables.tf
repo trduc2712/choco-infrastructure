@@ -45,5 +45,11 @@ variable "backblaze_application_key" {
 }
 
 variable "clerk_authorized_parties" {
-  type = list(string)
+  type    = list(string)
+  default = []
+}
+
+variable "vercel_api_token" {
+  type      = string
+  sensitive = true
 }
