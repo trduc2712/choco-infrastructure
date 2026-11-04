@@ -1,0 +1,34 @@
+name: Bug
+description: Infrastructure that differs from what the docs and ADRs describe.
+labels: ["type: bug"]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Commands to run or the plan output.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+      description: Error, plan diff or what the provider's dashboard shows.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Staging or production; Terraform run or commit if known.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Suspected cause, ideas for the fix, links.
