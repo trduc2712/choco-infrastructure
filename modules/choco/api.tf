@@ -42,6 +42,7 @@ resource "render_env_group" "api" {
       Storage__SecretAccessKey            = { value = b2_application_key.api.application_key }
     },
     local.clerk_authorized_parties_env_vars,
+    local.bootstrap_admin_env_vars,
   )
 }
 

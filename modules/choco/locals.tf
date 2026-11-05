@@ -11,6 +11,11 @@ locals {
     "Clerk__AuthorizedParties__${index}" => { value = party }
   }
 
+  bootstrap_admin_env_vars = {
+    for index, id in distinct(var.bootstrap_admin_identity_ids) :
+    "Authorization__BootstrapAdminIdentityIds__${index}" => { value = id }
+  }
+
   # Npgsql does not accept postgres:// URIs. The direct host is used instead of the
   # pooler because Npgsql pools connections itself.
   database_connection_string = join(";", [

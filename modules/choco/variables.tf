@@ -77,6 +77,17 @@ variable "clerk_authorized_parties" {
   default     = []
 }
 
+variable "bootstrap_admin_identity_ids" {
+  description = "Clerk user ids the API gives the system admin role at startup and when the user is created. It never removes the role."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition     = alltrue([for id in var.bootstrap_admin_identity_ids : startswith(id, "user_")])
+    error_message = "bootstrap_admin_identity_ids must contain only Clerk user ids (user_...)."
+  }
+}
+
 variable "web_repo" {
   type    = string
   default = "trduc2712/choco-web"
