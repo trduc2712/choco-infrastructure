@@ -15,5 +15,6 @@ module "choco" {
   clerk_webhook_signing_secret = var.clerk_webhook_signing_secret
   clerk_secret_key             = var.clerk_secret_key
   clerk_authorized_parties     = var.clerk_authorized_parties
+  bootstrap_admin_identity_ids = var.bootstrap_admin_identity_ids
   neon_org_id                  = var.neon_org_id
 }

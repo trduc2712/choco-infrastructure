@@ -33,6 +33,7 @@ Run `terraform init` in `envs/<env>` to create the workspace, then set:
 | `clerk_webhook_signing_secret` | yes | `whsec_…` of the environment's webhook endpoint; a placeholder until the endpoint exists |
 | `vercel_api_token` | yes | Vercel account token |
 | `clerk_authorized_parties` | | Optional HCL list, tick **HCL**, of origins other than the web frontend's, which Terraform adds itself; e.g. `[]` |
+| `bootstrap_admin_identity_ids` | | Optional HCL list, tick **HCL**, of the environment's Clerk user ids (`user_…`) the API makes system admins; e.g. `["user_…"]`. The API only adds the role, so removing an id does not revoke it |
 
 ## First Apply
 

@@ -49,6 +49,11 @@ variable "clerk_authorized_parties" {
   default = []
 }
 
+variable "bootstrap_admin_identity_ids" {
+  type    = list(string)
+  default = []
+}
+
 variable "vercel_api_token" {
   type      = string
   sensitive = true
