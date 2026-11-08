@@ -6,7 +6,7 @@ Terraform creates the Neon project, the Render service and env group, the B2 buc
 
 - **Render**: API key, workspace ID (`tea-…`), and a GitHub connection with access to `trduc2712/choco-api`.
 - **Neon**: personal API key and organization ID (`org-…`).
-- **Backblaze B2**: the Master Application Key; ordinary keys cannot create the key Terraform makes for the API. Verify the account's email address first: B2 refuses to create a public bucket, such as the media bucket, until it is verified.
+- **Backblaze B2**: the Master Application Key; ordinary keys cannot create the key Terraform makes for the API. Every bucket is private: B2 refuses to create a public bucket on an account with no payment history, and Choco's account never gets a card.
 - **Vercel**: an account token (Account Settings → Tokens) on the Hobby plan, and the Vercel GitHub App installed with access to `trduc2712/choco-web`.
 - **Clerk**: no Terraform provider. Staging uses the Development instance, production the Production instance.
 - **Terraform Cloud**: `terraform login`.

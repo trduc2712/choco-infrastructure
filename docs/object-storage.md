@@ -1,13 +1,13 @@
 # Object Storage
 
-How Choco's buckets and the objects in them are named. Why there are two buckets, and why media is public, is in [ADR 9](adr/0009-quarantine-user-uploads.md) and [ADR 10](adr/0010-serve-media-from-a-public-bucket-behind-api-built-urls.md).
+How Choco's buckets and the objects in them are named. Why there are two buckets is in [ADR 9](adr/0009-quarantine-user-uploads.md). [ADR 10](adr/0010-serve-media-from-a-public-bucket-behind-api-built-urls.md) chose a public media bucket, but B2 refuses to create a public bucket on an account with no payment history, so the media bucket is private and the API signs short-lived download addresses for it, the second option ADR 10 considered. ADR 10 is to be replaced by an ADR that records this.
 
 ## Buckets
 
 | Bucket | Access | Staging | Production |
 | --- | --- | --- | --- |
 | Uploads | Private | `trduc2712-choco-staging-uploads` | `trduc2712-choco-production-uploads` |
-| Media | Public | `trduc2712-choco-staging-media` | `trduc2712-choco-production-media` |
+| Media | Private | `trduc2712-choco-staging-media` | `trduc2712-choco-production-media` |
 
 Names follow `<namespace>-choco-<environment>-<role>`:
 
@@ -22,7 +22,7 @@ Names follow `<namespace>-choco-<environment>-<role>`:
 | Bucket | Lifecycle | CORS |
 | --- | --- | --- |
 | Uploads | Every file is hidden a day after upload and deleted a day after hiding; unfinished large files are cancelled after a day. Every upload is gone within 72 hours. | `PUT` through the S3 API from the environment's frontend origins only, with the `content-type` header, cached for an hour |
-| Media | Unfinished large files are cancelled after a day. Nothing else expires. | None |
+| Media | Unfinished large files are cancelled after a day. Nothing else expires. | None: images are loaded with plain `GET` requests, which need no CORS rule |
 
 - The lifecycle rules are a backstop. The API decides when an upload has expired and rejects pending media older than 24 hours, well before the bucket hides it.
 - The frontend origins are the same list the API accepts tokens from: the Vercel project's address and `clerk_authorized_parties`.
