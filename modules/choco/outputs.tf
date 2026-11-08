@@ -9,3 +9,7 @@ output "uploads_bucket_name" {
 output "web_url" {
   value = local.web_origin
 }
+
+output "media_bucket_name" {
+  value = b2_bucket.media.bucket_name
+}

@@ -6,8 +6,10 @@ locals {
 
   web_origin = "https://${vercel_project.web.name}.vercel.app"
 
+  frontend_origins = distinct(concat([local.web_origin], var.clerk_authorized_parties))
+
   clerk_authorized_parties_env_vars = {
-    for index, party in distinct(concat([local.web_origin], var.clerk_authorized_parties)) :
+    for index, party in local.frontend_origins :
     "Clerk__AuthorizedParties__${index}" => { value = party }
   }
 

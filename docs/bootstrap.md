@@ -1,12 +1,12 @@
 # Bootstrap
 
-Terraform creates the Neon project, the Render service and env group, the B2 bucket, and the Vercel project with its environment variables. Everything below is done by hand, once per environment (`<env>` is `staging` or `production`).
+Terraform creates the Neon project, the Render service and env group, the B2 buckets and the API's B2 key, and the Vercel project with its environment variables. Everything below is done by hand, once per environment (`<env>` is `staging` or `production`).
 
 ## Accounts and Keys
 
 - **Render**: API key, workspace ID (`tea-…`), and a GitHub connection with access to `trduc2712/choco-api`.
 - **Neon**: personal API key and organization ID (`org-…`).
-- **Backblaze B2**: the Master Application Key; ordinary keys cannot create the key Terraform makes for the API.
+- **Backblaze B2**: the Master Application Key; ordinary keys cannot create the key Terraform makes for the API. Verify the account's email address first: B2 refuses to create a public bucket, such as the media bucket, until it is verified.
 - **Vercel**: an account token (Account Settings → Tokens) on the Hobby plan, and the Vercel GitHub App installed with access to `trduc2712/choco-web`.
 - **Clerk**: no Terraform provider. Staging uses the Development instance, production the Production instance.
 - **Terraform Cloud**: `terraform login`.
@@ -32,7 +32,7 @@ Run `terraform init` in `envs/<env>` to create the workspace, then set:
 | `clerk_secret_key` | yes | `sk_test_…` or `sk_live_…` |
 | `clerk_webhook_signing_secret` | yes | `whsec_…` of the environment's webhook endpoint; a placeholder until the endpoint exists |
 | `vercel_api_token` | yes | Vercel account token |
-| `clerk_authorized_parties` | | Optional HCL list, tick **HCL**, of origins other than the web frontend's, which Terraform adds itself; e.g. `[]` |
+| `clerk_authorized_parties` | | Optional HCL list, tick **HCL**, of origins other than the web frontend's, which Terraform adds itself. They are allowed as token parties and as origins that may upload to the uploads bucket; e.g. `[]` |
 | `bootstrap_admin_identity_ids` | | Optional HCL list, tick **HCL**, of the environment's Clerk user ids (`user_…`) the API makes system admins; e.g. `["user_…"]`. The API only adds the role, so removing an id does not revoke it |
 
 ## First Apply
@@ -54,4 +54,5 @@ Run `terraform init` in `envs/<env>` to create the workspace, then set:
 - Changes go through a PR, then **Confirm & Apply** after merge. Discard stale runs waiting for confirmation; they block newer ones.
 - Changing a variable does not queue a run: use **New run**.
 - After an env change, run **Deploy latest commit**. Render does not redeploy on its own, and **Restart** keeps the old env.
+- Changing the buckets or capabilities of the API's B2 key replaces the key, so its secret changes and the old one stops working at once. Run **Deploy latest commit** right after the apply; until then the API cannot reach B2.
 - After a change to the frontend's environment variables, redeploy it on Vercel. Vite builds them into the bundle, so a running deployment keeps the old values.
