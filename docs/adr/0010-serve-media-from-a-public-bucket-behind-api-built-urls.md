@@ -4,7 +4,7 @@ Date: 2026-11-01
 
 ## Status
 
-Accepted
+Superseded by [12](0012-serve-media-from-a-private-bucket-through-api-signed-urls.md)
 
 ## Context
 
