@@ -22,12 +22,12 @@ Names follow `<namespace>-choco-<environment>-<role>`:
 | Bucket | Lifecycle | CORS |
 | --- | --- | --- |
 | Uploads | Every file is hidden a day after upload and deleted a day after hiding; unfinished large files are cancelled after a day. Every upload is gone within 72 hours. | `PUT` through the S3 API from the environment's frontend origins only, with the `content-type` header, cached for an hour |
-| Media | Unfinished large files are cancelled after a day. Nothing else expires. | None: images are loaded with plain `GET` requests, which need no CORS rule |
+| Media | Hidden files are deleted seven days after hiding, so a file deleted by mistake can be restored within that week; unfinished large files are cancelled after a day. Files the API has not deleted never expire. | None: images are loaded with plain `GET` requests, which need no CORS rule |
 
 - The lifecycle rules are a backstop. The API decides when an upload has expired and rejects pending media older than 24 hours, well before the bucket hides it.
 - The frontend origins are the same list the API accepts tokens from: the Vercel project's address and `clerk_authorized_parties`.
 - The API has one key per environment, covering both buckets with `listAllBucketNames`, `readFiles`, `writeFiles` and `deleteFiles`. It cannot list the files in either bucket. The master key is only used by Terraform.
-- What `DeleteObject` through the S3 API does in B2, hiding the file or deleting it, is still to be checked on staging.
+- `DeleteObject` through the S3 API without a version id only hides a file: B2 adds a delete marker and keeps the file, which still counts towards storage, until the bucket's lifecycle rule deletes it: a day later in the uploads bucket, seven days later in the media bucket. Checked on staging on 2026-11-08.
 
 ## Identifiers
 
