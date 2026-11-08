@@ -37,7 +37,8 @@ resource "render_env_group" "api" {
       Database__ConnectionString          = { value = local.database_connection_string }
       Storage__ServiceUrl                 = { value = local.storage_service_url }
       Storage__Region                     = { value = local.storage_region }
-      Storage__BucketName                 = { value = b2_bucket.uploads.bucket_name }
+      Storage__UploadsBucketName          = { value = b2_bucket.uploads.bucket_name }
+      Storage__MediaBucketName            = { value = b2_bucket.media.bucket_name }
       Storage__AccessKeyId                = { value = b2_application_key.api.application_key_id }
       Storage__SecretAccessKey            = { value = b2_application_key.api.application_key }
     },
