@@ -26,6 +26,7 @@ resource "b2_bucket" "media" {
 
   lifecycle_rules {
     file_name_prefix                                       = ""
+    days_from_hiding_to_deleting                           = 7
     days_from_starting_to_canceling_unfinished_large_files = 1
   }
 }
