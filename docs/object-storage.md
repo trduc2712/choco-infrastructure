@@ -17,6 +17,18 @@ Names follow `<namespace>-choco-<environment>-<role>`:
 - No reserved prefix (`b2-`, `xn--`, `sthree-`, `amzn-s3-demo-`) and no personal data.
 - A bucket cannot be renamed; a new name means a new bucket.
 
+## Lifecycle and Access
+
+| Bucket | Lifecycle | CORS |
+| --- | --- | --- |
+| Uploads | Every file is hidden a day after upload and deleted a day after hiding; unfinished large files are cancelled after a day. Every upload is gone within 72 hours. | `PUT` through the S3 API from the environment's frontend origins only, with the `content-type` header, cached for an hour |
+| Media | Unfinished large files are cancelled after a day. Nothing else expires. | None |
+
+- The lifecycle rules are a backstop. The API decides when an upload has expired and rejects pending media older than 24 hours, well before the bucket hides it.
+- The frontend origins are the same list the API accepts tokens from: the Vercel project's address and `clerk_authorized_parties`.
+- The API has one key per environment, covering both buckets with `listAllBucketNames`, `readFiles`, `writeFiles` and `deleteFiles`. It cannot list the files in either bucket. The master key is only used by Terraform.
+- What `DeleteObject` through the S3 API does in B2, hiding the file or deleting it, is still to be checked on staging.
+
 ## Identifiers
 
 Every uploaded file has two identifiers:
