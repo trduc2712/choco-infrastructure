@@ -22,7 +22,7 @@ resource "b2_bucket" "uploads" {
 
 resource "b2_bucket" "media" {
   bucket_name = "${var.namespace}-choco-${var.environment}-media"
-  bucket_type = "allPublic"
+  bucket_type = "allPrivate"
 
   lifecycle_rules {
     file_name_prefix                                       = ""
