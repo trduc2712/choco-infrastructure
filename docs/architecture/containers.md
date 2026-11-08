@@ -12,19 +12,19 @@ flowchart TB
         api["<b>API</b><br/>[Container: ASP.NET Core, Docker]<br/>Business logic, background jobs"]
         db[("<b>Database</b><br/>[Container: PostgreSQL]<br/>Data and job queue")]
         uploads[("<b>Uploads bucket</b><br/>[Container: S3 object storage, private]<br/>Unchecked uploads, expire after a day")]
-        media[("<b>Media bucket</b><br/>[Container: S3 object storage, public]<br/>Images encoded from checked uploads")]
+        media[("<b>Media bucket</b><br/>[Container: S3 object storage, private]<br/>Images encoded from checked uploads")]
     end
 
     user -- "Uses" --> client
     client -- "Signs the user in" --> clerk
     client -- "Calls with the user's token<br/>[HTTPS, JSON]" --> api
     client -- "Uploads images<br/>[HTTPS, presigned URL]" --> uploads
-    client -- "Reads images<br/>[HTTPS]" --> media
+    client -- "Reads images<br/>[HTTPS, URL signed by the API]" --> media
     clerk -- "Sends user events<br/>[Webhooks]" --> api
     api -- "Validates tokens, reads users<br/>[HTTPS]" --> clerk
     api -- "Reads and writes<br/>[SQL]" --> db
     api -- "Signs upload URLs, reads and deletes originals<br/>[S3 API]" --> uploads
-    api -- "Writes encoded images<br/>[S3 API]" --> media
+    api -- "Writes encoded images, signs download URLs<br/>[S3 API]" --> media
 
     classDef person fill:#08427b,stroke:#052e56,color:#fff
     classDef container fill:#438dd5,stroke:#2e6295,color:#fff
@@ -39,10 +39,10 @@ Dark blue is a person, light blue is a container inside Choco, grey is a system 
 
 | Container | Technology | Responsibility | Decided in |
 | --- | --- | --- | --- |
-| API | ASP.NET Core in a Docker image | All business logic. Validates tokens, signs upload URLs, builds media addresses, and runs background jobs in the same process, such as processing uploaded images. Keeps no state of its own, so it can run as many instances as needed. | [ADR 2](../adr/0002-host-the-api-on-render.md), [ADR 7](../adr/0007-run-background-jobs-from-a-postgresql-queue.md) |
+| API | ASP.NET Core in a Docker image | All business logic. Validates tokens, signs upload and media download URLs, and runs background jobs in the same process, such as processing uploaded images. Keeps no state of its own, so it can run as many instances as needed. | [ADR 2](../adr/0002-host-the-api-on-render.md), [ADR 7](../adr/0007-run-background-jobs-from-a-postgresql-queue.md) |
 | Database | PostgreSQL | The source of truth, and the queue of background jobs. Stores object keys, never media addresses. | [ADR 3](../adr/0003-use-neon-for-postgresql.md), [ADR 7](../adr/0007-run-background-jobs-from-a-postgresql-queue.md) |
 | Uploads bucket | S3-compatible object storage, private | Files as clients upload them, before they are checked. Only the API reads them. Each is removed within a few days. | [ADR 9](../adr/0009-quarantine-user-uploads.md) |
-| Media bucket | S3-compatible object storage, public | Images the API encoded again from checked uploads. Readable by anyone with an address, and addresses come only from the API. Keys are never reused. | [ADR 9](../adr/0009-quarantine-user-uploads.md), [ADR 10](../adr/0010-serve-media-from-a-public-bucket-behind-api-built-urls.md) |
+| Media bucket | S3-compatible object storage, private | Images the API encoded again from checked uploads. Readable only through short-lived addresses the API signs. Keys are never reused. | [ADR 9](../adr/0009-quarantine-user-uploads.md), [ADR 12](../adr/0012-serve-media-from-a-private-bucket-through-api-signed-urls.md) |
 
 Files never pass through the API: clients upload to the uploads bucket and read from the media bucket directly. Bucket names, keys and lifetimes are in [Object Storage](../object-storage.md).
 
