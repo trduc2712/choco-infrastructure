@@ -1,6 +1,6 @@
 # Object Storage
 
-How Choco's buckets and the objects in them are named. Why there are two buckets is in [ADR 9](adr/0009-quarantine-user-uploads.md). [ADR 10](adr/0010-serve-media-from-a-public-bucket-behind-api-built-urls.md) chose a public media bucket, but B2 refuses to create a public bucket on an account with no payment history, so the media bucket is private and the API signs short-lived download addresses for it, the second option ADR 10 considered. ADR 10 is to be replaced by an ADR that records this.
+How Choco's buckets and the objects in them are named. Why there are two buckets is in [ADR 9](adr/0009-quarantine-user-uploads.md), and why both are private, with the API signing download addresses for media, is in [ADR 12](adr/0012-serve-media-from-a-private-bucket-through-api-signed-urls.md).
 
 ## Buckets
 
